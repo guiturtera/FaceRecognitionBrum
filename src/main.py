@@ -11,7 +11,7 @@ import json
 from picture import Picture
 
 KNOWN_FACES_DIR = "../known-images"
-LOADED_FACES_FILE = f"{KNOWN_FACES_DIR}/loaded-faces.pickle"
+LOADED_FACES_FILE = f"../loaded-faces.pickle"
 UNKNOWN_FACES_DIR = "../unknown-images"
 TOLERANCE = 0.6
 FRAME_THICKNESS = 3
@@ -38,11 +38,9 @@ def deserialize_pictures(fileToRead):
 
     return pictures
 
-known_faces = []
-known_names = []
-
 pictures = []
 
+print("loading all unknown faces...")
 if exists(LOADED_FACES_FILE):
     print("deserializing object")
     pictures = deserialize_pictures(LOADED_FACES_FILE)
@@ -51,18 +49,20 @@ else:
     pictures = load_pictures_objects(KNOWN_FACES_DIR)
     serialize_pictures(pictures, LOADED_FACES_FILE)
 
-print(pictures)
+known_faces = []
+known_names = []
 
+for i in pictures:
+    known_faces.append(i.encoding)
+    known_names.append(i.name)
+
+print('done!')
+
+print(known_faces)
 input()
 
-for name in os.listdir(KNOWN_FACES_DIR):
-        image = face_recognition.load_image_file(f"{KNOWN_FACES_DIR}/{name}")
-        encoding = face_recognition.face_encodings(image)[0]    # Specifying specific face
-        known_faces.append(encoding)
-        known_names.append(name.split(".")[0])
-
 print(type(known_faces[0]))
-print("processing unknown faces")
+print("processing unknown face")
 input()
 for filename in os.listdir(UNKNOWN_FACES_DIR):
     #print(filename)
